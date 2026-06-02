@@ -1701,6 +1701,65 @@ The coordinate system is platform-specific:
 
 Experimentation will be needed to find the correct values for your setup.
 
+[[macos-window]]
+==== Manage macOS windows
+
+The action `macos-window` moves or resizes the focused macOS window.
+It uses macOS Accessibility APIs, so kanata must have Accessibility permission.
+The Space switching and Space movement commands also use macOS private
+CoreGraphics/SkyLight APIs.
+
+This action is macOS-only. On other platforms, the config parses but the action
+logs a warning when triggered.
+
+The action accepts either a named command:
+
+[source]
+----
+(macos-window left-half)
+----
+
+Or one or more custom frames. Frame values are basis points relative to the
+current display: `0` is the start of the display, `10000` is the full width or
+height. Repeating the same action within a short interval cycles through its
+frames.
+
+[source]
+----
+(defalias
+  win-left (macos-window
+    (0 0 5000 10000)
+    (0 0 6667 10000)
+    (0 0 3333 10000))
+)
+----
+
+See `cfg_samples/macos-window.kbd` for a config file that exercises all
+supported command names.
+
+Supported commands are:
+
+`maximize`, `restore`, `maximize-height`, `maximize-width`,
+`almost-maximize`, `reasonable-size`, `center`, `center-half`, `left-half`,
+`right-half`, `top-half`, `bottom-half`, `first-third`, `center-third`,
+`last-third`, `first-two-thirds`, `center-two-thirds`, `last-two-thirds`,
+`first-three-fourths`, `center-three-fourths`, `last-three-fourths`,
+`top-third`, `middle-third`, `bottom-third`, `top-two-thirds`,
+`bottom-two-thirds`, `top-first-fourth`, `top-second-fourth`,
+`top-third-fourth`, `top-last-fourth`, `top-three-fourths`,
+`bottom-three-fourths`, `top-center-two-thirds`,
+`bottom-center-two-thirds`, `first-fourth`, `second-fourth`, `third-fourth`,
+`last-fourth`, `top-left-sixth`, `top-center-sixth`, `top-right-sixth`,
+`bottom-left-sixth`, `bottom-center-sixth`, `bottom-right-sixth`,
+`move-left`, `move-right`, `move-top`, `move-bottom`,
+`move-to-previous-space`, `move-to-next-space`,
+`switch-to-previous-space`, `switch-to-next-space`,
+`switch-to-left-space`, `switch-to-right-space`,
+`move-to-previous-display`, `move-to-next-display`,
+`top-left-quarter`, `top-right-quarter`, `bottom-left-quarter`,
+`bottom-right-quarter`, `make-smaller`, `make-larger`, and
+`toggle-fullscreen`.
+
 [[mouse-speed]]
 ==== Modify the speed of mouse movements
 
@@ -3401,7 +3460,7 @@ TCP server. This is useful for:
 
 - Triggering external tool actions from keyboard shortcuts
 - Layer change notifications to status bars or tray applications
-- Integration with automation tools like Raycast, Alfred, or Hammerspoon
+- Integration with automation tools like Alfred or Hammerspoon
 - Controlling other applications without spawning shell processes
 
 Messages are sent as newline-terminated JSON in the format:
@@ -3434,9 +3493,6 @@ Compared to the <<cmd>> action, `push-msg` offers:
 [source]
 ----
 (defalias
-  ;; Trigger a Raycast extension
-  raycast-clip (push-msg "raycast:clipboard-history")
-
   ;; Control media playback via external script
   play-pause (push-msg "media:toggle")
   next-track (push-msg "media:next")

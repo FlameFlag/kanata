@@ -118,6 +118,8 @@ mod linux;
 
 #[cfg(target_os = "macos")]
 mod macos;
+#[cfg(target_os = "macos")]
+mod macos_window;
 
 mod output_logic;
 use output_logic::*;
@@ -1634,6 +1636,15 @@ impl Kanata {
                             "movemousespeed modifiers: {:?}",
                             self.move_mouse_speed_modifiers
                         );
+                    }
+                    CustomAction::MacosWindow(_action) => {
+                        #[cfg(target_os = "macos")]
+                        if let Err(err) = macos_window::apply_window_action(_action) {
+                            log::error!("macos-window action failed: {err}");
+                        }
+
+                        #[cfg(not(target_os = "macos"))]
+                        log::warn!("macos-window is only supported on macOS");
                     }
                     CustomAction::Cmd(_cmd) => {
                         #[cfg(feature = "cmd")]

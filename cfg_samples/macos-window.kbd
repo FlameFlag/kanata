@@ -1,0 +1,88 @@
+;; Example and parser-test coverage for macOS window management.
+;;
+;; The `macos-window` action is macOS-only at runtime. This file still parses
+;; on every platform, so it can be used as a syntax/configuration test.
+
+(defsrc
+  f1 f2 f3 f4 f5 f6 f7 f8 f9 f10 f11 f12
+)
+
+(defcfg
+  process-unmapped-keys no
+)
+
+(deflayer base
+  @wlh @wrh @wth @wbh @wmax @wctr @wrest @wfs @wmps @wmns @wmpd @wmnd
+)
+
+(defalias
+  wmax (macos-window maximize)
+  wrest (macos-window restore)
+  wmh (macos-window maximize-height)
+  wmw (macos-window maximize-width)
+  wamax (macos-window almost-maximize)
+  wrsz (macos-window reasonable-size)
+  wctr (macos-window center)
+  wctrh (macos-window center-half)
+  wlh (macos-window left-half)
+  wrh (macos-window right-half)
+  wth (macos-window top-half)
+  wbh (macos-window bottom-half)
+  wf3 (macos-window first-third)
+  wc3 (macos-window center-third)
+  wl3 (macos-window last-third)
+  wf23 (macos-window first-two-thirds)
+  wc23 (macos-window center-two-thirds)
+  wl23 (macos-window last-two-thirds)
+  wf34 (macos-window first-three-fourths)
+  wc34 (macos-window center-three-fourths)
+  wl34 (macos-window last-three-fourths)
+  wt3 (macos-window top-third)
+  wm3 (macos-window middle-third)
+  wb3 (macos-window bottom-third)
+  wt23 (macos-window top-two-thirds)
+  wb23 (macos-window bottom-two-thirds)
+  wtf4 (macos-window top-first-fourth)
+  wts4 (macos-window top-second-fourth)
+  wtt4 (macos-window top-third-fourth)
+  wtl4 (macos-window top-last-fourth)
+  wt34 (macos-window top-three-fourths)
+  wb34 (macos-window bottom-three-fourths)
+  wtc23 (macos-window top-center-two-thirds)
+  wbc23 (macos-window bottom-center-two-thirds)
+  wf4 (macos-window first-fourth)
+  ws4 (macos-window second-fourth)
+  wt4 (macos-window third-fourth)
+  wl4 (macos-window last-fourth)
+  wtl6 (macos-window top-left-sixth)
+  wtc6 (macos-window top-center-sixth)
+  wtr6 (macos-window top-right-sixth)
+  wbl6 (macos-window bottom-left-sixth)
+  wbc6 (macos-window bottom-center-sixth)
+  wbr6 (macos-window bottom-right-sixth)
+  wml (macos-window move-left)
+  wmr (macos-window move-right)
+  wmt (macos-window move-top)
+  wmb (macos-window move-bottom)
+  wmps (macos-window move-to-previous-space)
+  wmns (macos-window move-to-next-space)
+  wsps (macos-window switch-to-previous-space)
+  wsns (macos-window switch-to-next-space)
+  wsls (macos-window switch-to-left-space)
+  wsrs (macos-window switch-to-right-space)
+  wmpd (macos-window move-to-previous-display)
+  wmnd (macos-window move-to-next-display)
+  wtlq (macos-window top-left-quarter)
+  wtrq (macos-window top-right-quarter)
+  wblq (macos-window bottom-left-quarter)
+  wbrq (macos-window bottom-right-quarter)
+  wsm (macos-window make-smaller)
+  wlg (macos-window make-larger)
+  wfs (macos-window toggle-fullscreen)
+
+  ;; Custom frame cycles use basis points relative to the current display.
+  wcycle (macos-window
+    (0 0 5000 10000)
+    (0 0 6667 10000)
+    (0 0 3333 10000))
+)

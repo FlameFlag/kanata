@@ -55,6 +55,7 @@ pub enum CustomAction {
     MoveMouseSpeed {
         speed: u16,
     },
+    MacosWindow(MacosWindowAction),
     SequenceCancel,
     SequenceLeader(u16, SequenceInputMode),
     /// Purpose:
@@ -98,6 +99,85 @@ pub enum CustomAction {
     ClipboardSaveSet(u16, &'static str),
     ClipboardSaveCmdSet(u16, &'static [&'static str]),
     ClipboardSaveSwap(u16, u16),
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub enum MacosWindowAction {
+    FrameCycle(&'static [MacosWindowFrame]),
+    Command(MacosWindowCommand),
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub struct MacosWindowFrame {
+    pub x: i32,
+    pub y: i32,
+    pub width: i32,
+    pub height: i32,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub enum MacosWindowCommand {
+    Maximize,
+    Restore,
+    MaximizeHeight,
+    MaximizeWidth,
+    AlmostMaximize,
+    ReasonableSize,
+    Center,
+    CenterHalf,
+    LeftHalf,
+    RightHalf,
+    TopHalf,
+    BottomHalf,
+    FirstThird,
+    CenterThird,
+    LastThird,
+    FirstTwoThirds,
+    CenterTwoThirds,
+    LastTwoThirds,
+    FirstThreeFourths,
+    CenterThreeFourths,
+    LastThreeFourths,
+    TopThird,
+    MiddleThird,
+    BottomThird,
+    TopTwoThirds,
+    BottomTwoThirds,
+    TopFirstFourth,
+    TopSecondFourth,
+    TopThirdFourth,
+    TopLastFourth,
+    TopThreeFourths,
+    BottomThreeFourths,
+    TopCenterTwoThirds,
+    BottomCenterTwoThirds,
+    FirstFourth,
+    SecondFourth,
+    ThirdFourth,
+    LastFourth,
+    TopLeftSixth,
+    TopCenterSixth,
+    TopRightSixth,
+    BottomLeftSixth,
+    BottomCenterSixth,
+    BottomRightSixth,
+    MoveLeft,
+    MoveRight,
+    MoveTop,
+    MoveBottom,
+    MovePreviousSpace,
+    MoveNextSpace,
+    SwitchPreviousSpace,
+    SwitchNextSpace,
+    MovePreviousDisplay,
+    MoveNextDisplay,
+    TopLeftQuarter,
+    TopRightQuarter,
+    BottomLeftQuarter,
+    BottomRightQuarter,
+    MakeSmaller,
+    MakeLarger,
+    ToggleFullscreen,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]

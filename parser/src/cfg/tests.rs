@@ -446,6 +446,160 @@ fn recursive_multi_is_flattened() {
 }
 
 #[test]
+fn parse_macos_window_frame_cycle() {
+    let source = r#"
+(defsrc a)
+(deflayer base
+  (macos-window
+    (0 0 5000 10000)
+    (5000 0 5000 10000))
+)
+"#;
+    let res = parse_cfg(source).expect("parses");
+    let (klayers, _) = res.klayers.get();
+    assert_eq!(
+        klayers[0][0][OsCode::KEY_A.as_u16() as usize],
+        Action::Custom(&CustomAction::MacosWindow(MacosWindowAction::FrameCycle(
+            &[
+                MacosWindowFrame {
+                    x: 0,
+                    y: 0,
+                    width: 5000,
+                    height: 10000,
+                },
+                MacosWindowFrame {
+                    x: 5000,
+                    y: 0,
+                    width: 5000,
+                    height: 10000,
+                },
+            ]
+        ))),
+    );
+}
+
+#[test]
+fn parse_macos_window_command() {
+    let source = r#"
+(defsrc a)
+(deflayer base
+  (macos-window left-half)
+)
+"#;
+    let res = parse_cfg(source).expect("parses");
+    let (klayers, _) = res.klayers.get();
+    assert_eq!(
+        klayers[0][0][OsCode::KEY_A.as_u16() as usize],
+        Action::Custom(&CustomAction::MacosWindow(MacosWindowAction::Command(
+            MacosWindowCommand::LeftHalf
+        ))),
+    );
+}
+
+#[test]
+fn parse_all_macos_window_commands() {
+    for command in [
+        "maximize",
+        "restore",
+        "maximize-height",
+        "maximize-width",
+        "almost-maximize",
+        "reasonable-size",
+        "center",
+        "center-half",
+        "left-half",
+        "right-half",
+        "top-half",
+        "bottom-half",
+        "first-third",
+        "center-third",
+        "last-third",
+        "first-two-thirds",
+        "center-two-thirds",
+        "last-two-thirds",
+        "first-three-fourths",
+        "center-three-fourths",
+        "last-three-fourths",
+        "top-third",
+        "middle-third",
+        "bottom-third",
+        "top-two-thirds",
+        "bottom-two-thirds",
+        "top-first-fourth",
+        "top-second-fourth",
+        "top-third-fourth",
+        "top-last-fourth",
+        "top-three-fourths",
+        "bottom-three-fourths",
+        "top-center-two-thirds",
+        "bottom-center-two-thirds",
+        "first-fourth",
+        "second-fourth",
+        "third-fourth",
+        "last-fourth",
+        "top-left-sixth",
+        "top-center-sixth",
+        "top-right-sixth",
+        "bottom-left-sixth",
+        "bottom-center-sixth",
+        "bottom-right-sixth",
+        "move-left",
+        "move-right",
+        "move-top",
+        "move-bottom",
+        "move-to-previous-space",
+        "move-to-next-space",
+        "switch-to-previous-space",
+        "switch-to-next-space",
+        "switch-to-left-space",
+        "switch-to-right-space",
+        "move-to-previous-display",
+        "move-to-next-display",
+        "top-left-quarter",
+        "top-right-quarter",
+        "bottom-left-quarter",
+        "bottom-right-quarter",
+        "make-smaller",
+        "make-larger",
+        "toggle-fullscreen",
+    ] {
+        parse_cfg(&format!(
+            r#"
+(defsrc a)
+(deflayer base
+  (macos-window {command})
+)
+"#
+        ))
+        .unwrap_or_else(|err| panic!("failed to parse macos-window command {command}: {err:?}"));
+    }
+}
+
+#[test]
+fn parse_macos_window_errors() {
+    parse_cfg(
+        r#"
+(defsrc a)
+(deflayer base
+  (macos-window nope)
+)
+"#,
+    )
+    .map(|_| ())
+    .expect_err("unknown command fails");
+    parse_cfg(
+        r#"
+(defsrc a)
+(deflayer base
+  (macos-window (0 0 0 10000))
+)
+"#,
+    )
+    .map(|_| ())
+    .expect_err("zero-sized frame fails");
+}
+
+#[test]
 fn test_parse_sequence_a_b() {
     let seq = parse_sequence_keys(
         &parse("(a b)", "test").expect("parses")[0].t,
