@@ -446,6 +446,61 @@ fn recursive_multi_is_flattened() {
 }
 
 #[test]
+fn parse_macos_window_presets_and_frames() {
+    let source = r#"
+(defsrc a b c)
+(deflayer base
+  (macos-window left-half right-two-thirds maximize)
+  (macos-window (0 0 5000 10000) center)
+  (macos-window top-left-quarter bottom-center-sixth move-right)
+)
+"#;
+    let res = parse_cfg(source).expect("parses");
+    let (klayers, _) = res.klayers.get();
+    assert_eq!(
+        klayers[0][0][OsCode::KEY_A.as_u16() as usize],
+        Action::Custom(&CustomAction::MacosWindow(&[
+            MacosWindowLayout::Preset(MacosWindowPreset::LeftHalf),
+            MacosWindowLayout::Preset(MacosWindowPreset::RightTwoThirds),
+            MacosWindowLayout::Preset(MacosWindowPreset::Maximize),
+        ])),
+    );
+    assert_eq!(
+        klayers[0][0][OsCode::KEY_B.as_u16() as usize],
+        Action::Custom(&CustomAction::MacosWindow(&[
+            MacosWindowLayout::Frame(MacosWindowFrame {
+                x: 0,
+                y: 0,
+                width: 5000,
+                height: 10000,
+            }),
+            MacosWindowLayout::Preset(MacosWindowPreset::Center),
+        ])),
+    );
+    assert_eq!(
+        klayers[0][0][OsCode::KEY_C.as_u16() as usize],
+        Action::Custom(&CustomAction::MacosWindow(&[
+            MacosWindowLayout::Preset(MacosWindowPreset::TopLeftQuarter),
+            MacosWindowLayout::Preset(MacosWindowPreset::BottomCenterSixth),
+            MacosWindowLayout::Preset(MacosWindowPreset::MoveRight),
+        ])),
+    );
+}
+
+#[test]
+fn reject_unknown_macos_window_preset() {
+    let source = r#"
+(defsrc a)
+(deflayer base (macos-window diagonal-ish))
+"#;
+    let err = parse_cfg(source).expect_err("should reject unknown preset");
+    assert!(
+        format!("{err:?}").contains("unknown macos-window preset"),
+        "{err:?}"
+    );
+}
+
+#[test]
 fn test_parse_sequence_a_b() {
     let seq = parse_sequence_keys(
         &parse("(a b)", "test").expect("parses")[0].t,

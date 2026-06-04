@@ -1701,6 +1701,87 @@ The coordinate system is platform-specific:
 
 Experimentation will be needed to find the correct values for your setup.
 
+[[macos-window]]
+==== macOS window management
+
+The `macos-window` action moves and resizes the focused macOS window.
+It requires macOS Accessibility permission.
+
+.Syntax:
+[source]
+----
+(macos-window $layout ...)
+----
+
+Each `$layout` can be a preset or a custom frame.
+When multiple layouts are provided, repeated activations within a short time
+cycle through the layouts.
+
+Preset layouts:
+
+* `maximize` or `max`
+* `almost-maximize`, `almost-max`, or `almost`
+* `left-half` or `left`
+* `right-half` or `right`
+* `top-half` or `top`
+* `bottom-half` or `bottom`
+* `center` or `centered`
+* `first-third` or `left-third`
+* `center-third` or `middle-horizontal-third`
+* `last-third` or `right-third`
+* `left-two-thirds` or `first-two-thirds`
+* `center-two-thirds` or `middle-two-thirds`
+* `right-two-thirds` or `last-two-thirds`
+* `first-three-fourths`, `left-three-fourths`, `first-three-quarters`, or `left-three-quarters`
+* `center-three-fourths`, `middle-three-fourths`, `center-three-quarters`, or `middle-three-quarters`
+* `last-three-fourths`, `right-three-fourths`, `last-three-quarters`, or `right-three-quarters`
+* `top-third`
+* `middle-third`, `vertical-middle-third`, or `center-vertical-third`
+* `bottom-third`
+* `top-two-thirds`
+* `bottom-two-thirds`
+* `top-center-two-thirds` or `top-middle-two-thirds`
+* `bottom-center-two-thirds` or `bottom-middle-two-thirds`
+* `top-first-fourth` or `top-first-quarter`
+* `top-second-fourth` or `top-second-quarter`
+* `top-third-fourth` or `top-third-quarter`
+* `top-last-fourth` or `top-last-quarter`
+* `top-three-fourths` or `top-three-quarters`
+* `bottom-three-fourths` or `bottom-three-quarters`
+* `first-fourth`, `left-fourth`, `first-quarter`, or `left-quarter`
+* `second-fourth` or `second-quarter`
+* `third-fourth` or `third-quarter`
+* `last-fourth`, `right-fourth`, `last-quarter`, or `right-quarter`
+* `top-left-quarter` or `top-left-fourth`
+* `top-right-quarter` or `top-right-fourth`
+* `bottom-left-quarter` or `bottom-left-fourth`
+* `bottom-right-quarter` or `bottom-right-fourth`
+* `top-left-sixth`
+* `top-center-sixth` or `top-middle-sixth`
+* `top-right-sixth`
+* `bottom-left-sixth`
+* `bottom-center-sixth` or `bottom-middle-sixth`
+* `bottom-right-sixth`
+* `move-left`
+* `move-right`
+* `move-top` or `move-up`
+* `move-bottom` or `move-down`
+
+Custom frames use basis points relative to the visible work area of the
+window's current display:
+`(x y width height)`, where `10000` means 100%.
+
+.Example:
+[source]
+----
+(defalias
+  wl (macos-window left-half right-two-thirds maximize)
+  wr (macos-window right-half left-two-thirds maximize)
+  wc (macos-window center)
+  wt (macos-window (0 0 5000 10000) (5000 0 5000 10000))
+)
+----
+
 [[mouse-speed]]
 ==== Modify the speed of mouse movements
 
